@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 var customMessages = "ARIA"
 var customMessages1 = "TIM"
 var customMessages2 = "ARIA"
