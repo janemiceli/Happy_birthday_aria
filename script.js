@@ -2,7 +2,7 @@
 
 var customMessages = "ARIA"
 var customMessages1 = "TIM"
-var customMessages2 = "JANE"
+var customMessages2 = "ARIA"
 var customMessages3 = "CONNOR"
 var customMessages4 = "MICELIS"
 const messages = ["TIM", "ARIA","CONNOR","MICELIS"]
@@ -14,7 +14,6 @@ var greenrain = 104;
 var bluerain = 207;
 var purplerain = 255;
 
-<<<<<<< HEAD
 var colorrain = pinkrain;
 
 var M = {
