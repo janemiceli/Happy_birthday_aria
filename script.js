@@ -1,9 +1,5 @@
-var customMessages = "ARIA"
-var customMessages1 = "TIM"
-var customMessages2 = "ARIA"
-var customMessages3 = "CONNOR"
-var customMessages4 = "MICELIS"
-const messages = ["TIM", "ARIA","CONNOR","MICELIS"]
+
+const messages = ["TIM ", "ARIA ", "JANE ","CONNOR","MICELI "]
 
 //var customMessages=true;
 //var randomCharacters = true;
@@ -14,17 +10,18 @@ var purplerain = 255;
 
 var colorrain = pinkrain;
 
+
 var M = {
         settings: {
             COL_WIDTH: 20,
             COL_HEIGHT: 25,
             VELOCITY_PARAMS: {
                 min: 1,
-                max: 5
+                max: 2
             },
             CODE_LENGTH_PARAMS: {
-                min: 4,
-                max: 10
+                min: 3,
+                max: 20
             }
         },
         animation: null,
@@ -42,13 +39,11 @@ var M = {
         codesCounter: 0,
         init: function () {
             "use strict";
-            //M.c = document.getElementById('canvas');
-			//M.c = document.createElement('canvas');
             if (typeof(G_vmlCanvasManager) != 'undefined') {
                 M.c = G_vmlCanvasManager.initElement('canvas');
-			} else {
+            } else {
                 M.c = document.getElementById('canvas');
-			}
+            }
             M.ctx = M.c.getContext('2d');
             M.c.width = M.WIDTH;
             M.c.height = M.HEIGHT;
@@ -82,10 +77,8 @@ var M = {
         },
         loop: function () {
             "use strict";
-            //var requestAnimationFrame = function () { M.loop(); };
             M.animation = requestAnimationFrame(function () { M.loop(); });
             M.draw();
-            //stats.update();
         },
         draw: function () {
             "use strict";
@@ -99,70 +92,60 @@ var M = {
                     velocity = M.codes[i][0].velocity;
                     height = M.codes[i][0].canvas.height;
                     x = M.codes[i][0].position.x;
-                    y = M.codes[i][0].position.y - height;
                     c = M.codes[i][0].canvas;
                     ctx = c.getContext('2d');
-                    M.ctx.drawImage(c, x, y, M.settings.COL_WIDTH, height);
-                    if ((M.codes[i][0].position.y - height) < M.HEIGHT) {
-                        M.codes[i][0].position.y += velocity;
-                    } else {
-                        M.codes[i][0].position.y = 0;
+                    if ( i%2 ==0 ){
+                        y = M.codes[i][0].position.y + height;
+                        M.ctx.drawImage(c, x, y, M.settings.COL_WIDTH, height);
+                        if ((M.codes[i][0].position.y + height) < M.HEIGHT) {
+                            M.codes[i][0].position.y -= velocity;
+                        } else {
+                            M.codes[i][0].position.y = height;
+                        }
+                    }else{
+                        y = M.codes[i][0].position.y - height;
+                        M.ctx.drawImage(c, x, y, M.settings.COL_WIDTH, height);
+                        if ((M.codes[i][0].position.y - height) < M.HEIGHT) {
+                            M.codes[i][0].position.y += velocity;
+                        } else {
+                            M.codes[i][0].position.y = 0;
+                        }
                     }
                 }
             }
         },
         createCode: function () {
             "use strict";
-            if (M.codesCounter > M.COLUMNS) {
-                clearTimeout(M.createCodeLoop);
-                return;
-            }
+            clearTimeout(M.createCodeLoop);
             var randomInterval = M.randomFromInterval(0, 100), column = M.assignColumn(), codeLength = 0, i = 0, reverseString = "";
             if (column) {
                 var codeVelocity = (Math.random() * (M.settings.VELOCITY_PARAMS.max - M.settings.VELOCITY_PARAMS.min)) + M.settings.VELOCITY_PARAMS.min, lettersLength = M.letters.length, newLetter = 0;
                 codeLength = M.randomFromInterval(M.settings.CODE_LENGTH_PARAMS.min, M.settings.CODE_LENGTH_PARAMS.max);
-                M.codes[column][0].position = {'x': (column * M.settings.COL_WIDTH), 'y': 0};
-                M.codes[column][0].velocity = codeVelocity;
-                M.codes[column][0].strength = M.codes[column][0].velocity / M.settings.VELOCITY_PARAMS.max;
-                
-                // Choose one of the next two lines
-
-                // The old way of working - only 5 custom messages of unique length
-                M.ThisisCrap(codeLength, column, lettersLength)
-                
-                // The new Way - but doesn't quite work.... only last message appears.
-                //M.CheckArray(codeLength, messages, column, lettersLength)
-
+                    
+                //if ( M.codesCounter%2 == 0 ){
+                    M.codes[column][0].position = {'x': (column * M.settings.COL_WIDTH), 'y': 0};
+                    M.codes[column][0].velocity = codeVelocity;
+                    M.codes[column][0].strength = M.codes[column][0].velocity / M.settings.VELOCITY_PARAMS.max;
+                //}else{
+                   // M.codes[column][0].position = {'x': (column * M.settings.COL_WIDTH), 'y': 0};
+                    //M.codes[column][0].velocity = -codeVelocity;
+                    //M.codes[column][0].strength = (M.codes[column][0].velocity * -1) / M.settings.VELOCITY_PARAMS.max;
+                //}
+                M.CheckArray(codeLength, messages, column, lettersLength)
                 M.createCanvii(column);
                 M.codesCounter += 1;
             }
             M.createCodeLoop = setTimeout(M.createCode, randomInterval);
         },
-        ThisisCrap: function (codeLength, column, lettersLength)
-        {
-            if (codeLength === customMessages.length + 1) {
-                M.insertCustomMessages(codeLength, customMessages, column);
-            } else if (codeLength === customMessages1.length + 1) {
-                M.insertCustomMessages(codeLength, customMessages1, column);
-            } else if (codeLength === customMessages2.length + 1) {
-                M.insertCustomMessages(codeLength, customMessages2, column);
-            } else if (codeLength === customMessages3.length + 1) {
-                M.insertCustomMessages(codeLength, customMessages3, column);
-            } else if (codeLength === customMessages4.length + 1) {
-                M.insertCustomMessages(codeLength, customMessages4, column);
-            } else {
-                M.randomMessage(codeLength, column, lettersLength);
-            }  
-        }
-        ,
-        CheckArray: function (codeLength, array, column, lettersLength) {
+        CheckArray: function (codeLength, messages, column, lettersLength) {
             "use strict";
-            array.forEach(item => {
-                if (item.length == codeLength -1) {
+            var messageLengths = [];
+            messages.forEach(message => {messageLengths.push(message.length)});
+            messages.forEach(item => {
+                if (item.length == codeLength - 1) {
                     M.insertCustomMessages(codeLength, item, column);
-                } 
-                else {
-                    M.randomMessage(codeLength, column, lettersLength);
+                } else {
+                    M.randomMessage(codeLength, column, lettersLength, messageLengths);
                 }
             });
         },
@@ -173,8 +156,11 @@ var M = {
                 M.codes[column][i] = reverseString.substring(i - 1, i);
             }
         },
-        randomMessage:function (codeLength, column, lettersLength)  {
+        randomMessage:function (codeLength, column, lettersLength, messageLengths){
             "use strict";
+            if(messageLengths.includes(codeLength - 1)){
+                return;
+            }
             for (var i = 1; i <= codeLength; i = i + 1) {
                 var newLetter = M.randomFromInterval(0, (lettersLength - 1));
                 M.codes[column][i] = M.letters[newLetter];
@@ -185,30 +171,41 @@ var M = {
             var j, text, fadeStrength, codeLen = M.codes[i].length - 1, canvHeight = codeLen * M.settings.COL_HEIGHT, velocity = M.codes[i][0].velocity, strength = M.codes[i][0].strength, newCanv = document.createElement('canvas'), newCtx = newCanv.getContext('2d');
             newCanv.width = M.settings.COL_WIDTH;
             newCanv.height = canvHeight;
-            for (j = 1; j < codeLen; j += 1) {
-                text = M.codes[i][j];
-                newCtx.globalCompositeOperation = 'source-over';
-                newCtx.font = '30px matrix-code';
-                if (j < 5) {
-                    newCtx.shadowColor = 'hsla(' + colorrain + ', 79%, 72%)';
-                    newCtx.shadowOffsetX = 0;
-                    newCtx.shadowOffsetY = 0;
-                    newCtx.shadowBlur = 10;
-                    newCtx.fillStyle = 'hsla(' + colorrain + ', 79%, ' + (100 - (j * 5)) + '%, ' + strength + ')';
-                } else if (j > (codeLen - 4)) {
-                    fadeStrength = j / codeLen;
-                    fadeStrength = 1 - fadeStrength;
-                    newCtx.shadowOffsetX = 0;
-                    newCtx.shadowOffsetY = 0;
-                    newCtx.shadowBlur = 0;
-                    newCtx.fillStyle = 'hsla(' + colorrain + ', 79%, 74%, ' + (fadeStrength + 0.3) + ')';
-                } else {
-                    newCtx.shadowOffsetX = 0;
-                    newCtx.shadowOffsetY = 0;
-                    newCtx.shadowBlur = 0;
-                    newCtx.fillStyle = 'hsla(' + colorrain + ', 79%, 74%, ' + strength + ')';
+            newCtx.shadowOffsetX = 0;
+            newCtx.shadowOffsetY = 0;
+            newCtx.shadowBlur = 0;
+            newCtx.globalCompositeOperation = 'source-over';
+            newCtx.font = '30px matrix-code';
+            if (i %2 == 1){
+                for (j = 1; j < codeLen; j += 1) {
+                    text = M.codes[i][j];
+                    if (j < 3) {
+                        newCtx.shadowColor = 'hsla(' + colorrain + ', 79%, 72%)';
+                        newCtx.shadowBlur = 3;
+                        newCtx.fillStyle = 'hsla(' + colorrain + ', 79%, ' + (100 - (j * 3)) + '%, ' + strength + ')';
+                    } else if (j > (codeLen - 3)) {
+                        fadeStrength = 1 - (j / codeLen);
+                        newCtx.fillStyle = 'hsla(' + colorrain + ', 79%, 74%, ' + (fadeStrength + 0.3) + ')';
+                    } else {
+                        newCtx.fillStyle = 'hsla(' + colorrain + ', 79%, 74%, ' + strength + ')';
+                    }
+                    newCtx.fillText(text, 0, (canvHeight - (j * M.settings.COL_HEIGHT)));
                 }
-                newCtx.fillText(text, 0, (canvHeight - (j * M.settings.COL_HEIGHT)));
+            }else{
+              for (j = codeLen; j > 1; j -= 1) {
+                    text = M.codes[i][j];
+                    if (j < (codeLen -3 ) ) {
+                        newCtx.shadowColor = 'hsla(' + colorrain + ', 79%, 72%)';
+                        newCtx.shadowBlur = 3;
+                        newCtx.fillStyle = 'hsla(' + colorrain + ', 79%, ' + (j * 3) + '%, ' + strength + ')';
+                    } else if (j < 3) {
+                        fadeStrength = 1 - (j / codeLen);
+                        newCtx.fillStyle = 'hsla(' + colorrain + ', 79%, 74%, ' + (fadeStrength + 0.3) + ')';
+                    } else {
+                        newCtx.fillStyle = 'hsla(' + colorrain + ', 79%, 74%, ' + strength + ')';
+                    }
+                    newCtx.fillText(text, 0, (canvHeight - (j * M.settings.COL_HEIGHT)));
+                }
             }
             M.codes[i][0].canvas = newCanv;
         },
@@ -257,12 +254,12 @@ var M = {
         },
         assignColumn: function () {
             "use strict";
-		    var randomColumn = M.randomFromInterval(0, (M.COLUMNS - 1));
-		    return randomColumn;
-	    },
+            var randomColumn = M.randomFromInterval(0, (M.COLUMNS - 1));
+            return randomColumn;
+        },
         randomFromInterval: function (from, to) {
-	        "use strict";
-	        return Math.floor(Math.random() * (to - from + 1 ) + from);
+            "use strict";
+            return Math.floor(Math.random() * (to - from + 1 ) + from);
         },
         snapshot: function () {
             "use strict";
@@ -273,7 +270,3 @@ window.onload = function () {
     "use strict";
     M.init();
 };
-window.OnLoad= function () {
-    "use strict";
-    M.init();
-}; 
